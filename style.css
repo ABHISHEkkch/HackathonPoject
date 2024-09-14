@@ -1,4 +1,4 @@
-
+/* 
 #navbar{
     display: flex;
 }
@@ -24,4 +24,44 @@ html,body{
 #card{
     margin-left: 200px;
     margin-right: 200px;
+} */
+
+/* Global font styling */
+body {
+    font-family: 'Playfair Display', serif;
 }
+
+/* Adjust carousel image size for responsiveness  */
+.carousel-inner img {
+    height: 60vh;
+    object-fit:fill;
+   
+}
+
+
+ @media (max-width: 768px) {
+    .card {
+        margin-bottom: 20px;
+    }
+    #navbar {
+        padding: 10px;
+    }
+    .navbar-brand {
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .carousel-inner img {
+        height: 40vh;
+        width: 100%;
+    }
+
+    #content {
+        font-size: 1.2rem;
+    }
+
+    .card-body p {
+        font-size: 0.9rem;
+    }
+} 
