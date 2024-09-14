@@ -58,9 +58,7 @@
           </nav>
     </section>
     
-    <!-- Main Content -->
     <main class="container my-5">
-
         <!-- Calculators Section -->
         <section id="calculators" class="mb-5">
             <h2 class="display-4 mb-4">Carbon Footprint Calculators</h2>
@@ -108,6 +106,7 @@
                                 </div>
                                 <button type="submit" class="btn btn-primary">Calculate</button>
                             </form>
+                            <div id="individualResult" class="mt-3"></div>
                         </div>
                     </div>
                 </div>
@@ -168,44 +167,93 @@
                                 </div>
                                 <button type="submit" class="btn btn-primary">Calculate</button>
                             </form>
+                            <div id="organizationResult" class="mt-3"></div>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
     </main>
-
+    
     <!-- Footer -->
-    <footer class="bg-primary text-white py-4 mt-5">
+    <!-- <footer class="bg-primary text-white py-4 mt-5">
         <div class="container text-center">
             <p>&copy; 2024 Carbon Footprint in Indian Coal Mines. All rights reserved.</p>
         </div>
-    </footer>
-
+    </footer> -->
+    
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const individualForm = document.getElementById('individualForm');
             const organizationForm = document.getElementById('organizationForm');
-
+    
             individualForm.addEventListener('submit', function(e) {
                 e.preventDefault();
-                // Implement individual calculation logic here
-                console.log('Individual form submitted');
-                // You can access form values like this:
-                // const electricity = document.getElementById('electricity').value;
-                // Perform calculations and display results
-            });
+                // Individual calculation logic
+                const electricity = parseFloat(document.getElementById('electricity').value) || 0;
+                const transport = parseFloat(document.getElementById('transport').value) || 0;
+                const renewable = parseFloat(document.getElementById('renewable').value) || 0;
+                const waste = parseFloat(document.getElementById('waste').value) || 0;
+                const wasteUnit = document.getElementById('wasteUnit').value;
+    
+                // Conversion factors (these are approximations)
+                const CO2_ELECTRICITY = 0.92; // kg CO2 per kWh
+                const CO2_TRANSPORT = 0.12; // kg CO2 per km
+                const CO2_WASTE_KG = 2.5; // kg CO2 per kg of waste
+                const CO2_WASTE_LBS = 1.1; // kg CO2 per lb of waste
+    
+        
+                const carbonFromElectricity = (electricity - renewable) * CO2_ELECTRICITY;
+                const carbonFromTransport = transport * CO2_TRANSPORT;
+                const carbonFromWaste = waste * (wasteUnit === 'kg' ? CO2_WASTE_KG : CO2_WASTE_LBS);
+    
+                const totalCarbonFootprint = carbonFromElectricity + carbonFromTransport + carbonFromWaste;
 
+                document.getElementById('individualResult').innerHTML = `
+                    <h4>Total Carbon Footprint: ${totalCarbonFootprint.toFixed(2)} kg CO2</h4>
+                `;
+            });
+    
             organizationForm.addEventListener('submit', function(e) {
                 e.preventDefault();
-                // Implement organization calculation logic here
-                console.log('Organization form submitted');
-                // You can access form values like this:
-                // const energy = document.getElementById('energy').value;
-                // Perform calculations and display results
+                // Organization calculation logic
+                const energy = parseFloat(document.getElementById('energy').value) || 0;
+                const orgWaste = parseFloat(document.getElementById('orgWaste').value) || 0;
+                const diesel = parseFloat(document.getElementById('diesel').value) || 0;
+                const gasoline = parseFloat(document.getElementById('gasoline').value) || 0;
+                const naturalGas = parseFloat(document.getElementById('naturalGas').value) || 0;
+    
+                const dieselUnit = document.getElementById('dieselUnit').value;
+                const gasolineUnit = document.getElementById('gasolineUnit').value;
+                const naturalGasUnit = document.getElementById('naturalGasUnit').value;
+    
+                // Conversion factors
+                const CO2_ENERGY = 450; // kg CO2 per MWh
+                const CO2_WASTE_TON = 1000; // kg CO2 per ton of waste
+                const CO2_DIESEL_LITERS = 2.68; // kg CO2 per liter of diesel
+                const CO2_DIESEL_GALLONS = 10.18; // kg CO2 per gallon of diesel
+                const CO2_GASOLINE_LITERS = 2.31; // kg CO2 per liter of gasoline
+                const CO2_GASOLINE_GALLONS = 8.89; // kg CO2 per gallon of gasoline
+                const CO2_NATURAL_GAS_CUBIC_METERS = 2.03; // kg CO2 per cubic meter of natural gas
+                const CO2_NATURAL_GAS_THERMS = 5.3; // kg CO2 per therm of natural gas
+    
+                // Calculations
+                const carbonFromEnergy = energy * CO2_ENERGY;
+                const carbonFromWaste = orgWaste * CO2_WASTE_TON;
+                const carbonFromDiesel = diesel * (dieselUnit === 'liters' ? CO2_DIESEL_LITERS : CO2_DIESEL_GALLONS);
+                const carbonFromGasoline = gasoline * (gasolineUnit === 'liters' ? CO2_GASOLINE_LITERS : CO2_GASOLINE_GALLONS);
+                const carbonFromNaturalGas = naturalGas * (naturalGasUnit === 'cubic-meters' ? CO2_NATURAL_GAS_CUBIC_METERS : CO2_NATURAL_GAS_THERMS);
+    
+                const totalOrganizationCarbon = carbonFromEnergy + carbonFromWaste + carbonFromDiesel + carbonFromGasoline + carbonFromNaturalGas;
+    
+                // Display result
+                document.getElementById('organizationResult').innerHTML = `
+                    <h4>Total Carbon Footprint: ${totalOrganizationCarbon.toFixed(2)} kg CO2</h4>
+                `;
             });
         });
     </script>
+    
 </body>
 </html>
